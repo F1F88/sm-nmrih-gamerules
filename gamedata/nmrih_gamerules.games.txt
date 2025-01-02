@@ -1,0 +1,40 @@
+"Games"
+{
+    "nmrih"
+    {
+
+        "Offsets"
+        {
+            /* --- General --- */
+            "OS"
+            {
+                "windows"   "0"
+                "linux"     "1"
+                "mac"       "2"
+            }
+
+            "CGameRules::GetPlayerSpawnSpot"
+            {
+                "windows"   "76"
+                "linux"     "77"
+            }
+        }
+
+        "Functions"
+        {
+            "CGameRules::GetPlayerSpawnSpot"
+            {
+                "offset"        "CGameRules::GetPlayerSpawnSpot"
+                "hooktype"      "gamerules"
+                "return"        "cbaseentity"
+                "arguments"
+                {
+                    "client"
+                    {
+                        "type"      "cbaseentity"
+                    }
+                }
+            }
+        }
+    }
+}
