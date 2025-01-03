@@ -10,8 +10,8 @@
 #pragma newdecls required
 #pragma semicolon 1
 
-#define PLUGIN_NAME        "NMRiH GameRules Utils"
-#define PLUGIN_DESCRIPTION "NMRiH GameRules Utils"
+#define PLUGIN_NAME        "Library NMRiH GameRules"
+#define PLUGIN_DESCRIPTION "Library NMRiH GameRules"
 #define PLUGIN_VERSION     "1.0.0"
 
 public Plugin myinfo =
@@ -61,7 +61,7 @@ public void OnPluginStart()
     delete gamedata;
 
     /* ------- Load ConVar ------- */
-    CreateConVar("sm_nmrih_gamerules_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY | FCVAR_DONTRECORD);
+    CreateConVar("sm_lib_nmrih_gamerules_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY | FCVAR_DONTRECORD);
 
     /* ------- Register Libray ------- */
     RegPluginLibrary("nmrih_gamerules");
