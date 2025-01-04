@@ -29,7 +29,7 @@ public Plugin myinfo =
 #define LIB_GAMERULES_LOGGER_MAX_FILE_SIZE  1024 * 1024 * 4         // MB
 #define LIB_GAMERULES_LOGGER_MAX_FILES      2
 #define LIB_GAMERULES_LOGGER_LEVEL          LogLevel_Info
-#define LIB_GAMERULES_LOGGER_CONSOLE_LEVEL  LogLevel_Info
+#define LIB_GAMERULES_LOGGER_CONSOLE_LEVEL  LogLevel_Debug
 #define LIB_GAMERULES_LOGGER_FILE_LEVEL     LogLevel_Trace
 
 
@@ -79,14 +79,20 @@ public void OnPluginStart()
 
     log = new Logger(LIB_GAMERULES_LOGGER_NAME, sinks, 2);
     log.SetLevel(LIB_GAMERULES_LOGGER_LEVEL);
+    log.SetErrorHandler(ErrorHandler_LogToSM);
 
     delete sinks[0];
     delete sinks[1];
 
-    log.InfoEx("********** Library plugin \"%s\" initialize complete! **********", PLUGIN_NAME);
+    log.InfoEx("Library plugin \"%s\" initialize complete!", PLUGIN_NAME);
 }
 
 public void OnMapStart()
 {
     EnableHooks();
+}
+
+void ErrorHandler_LogToSM(const char[] msg)
+{
+    LogError(msg);
 }
