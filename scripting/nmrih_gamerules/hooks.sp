@@ -75,7 +75,7 @@ static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
     hParams.Set(1, player);
     hReturn.Value = returnValue;
 
-    log.TraceEx("GetPlayerSpawnSpot Changed %d | player = %d return = %d", result, player, returnValue);
+    log.TraceEx("GetPlayerSpawnSpot Changed! (result %d) (player %d) (return %d)", result, player, returnValue);
 
     if (result == Plugin_Changed)
         return MRES_Override;
