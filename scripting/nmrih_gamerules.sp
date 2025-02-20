@@ -11,7 +11,7 @@
 
 #define PLUGIN_NAME        "Library NMRiH GameRules"
 #define PLUGIN_DESCRIPTION "Library NMRiH GameRules"
-#define PLUGIN_VERSION     "1.0.2"
+#define PLUGIN_VERSION     "1.1.0"
 
 public Plugin myinfo =
 {
@@ -69,7 +69,7 @@ public void OnPluginStart()
     log = RotatingFileSink.CreateLogger(LIB_GAMERULES_LOGGER_NAME, path, LIB_GAMERULES_LOGGER_MAX_FILE_SIZE, LIB_GAMERULES_LOGGER_MAX_FILES);
     log.AddSinkEx(new ServerConsoleSink()); // for debug
 
-    log.Info("Library plugin \"" ... PLUGIN_NAME ... " (v" ... PLUGIN_VERSION ... ")\" initialize complete!");
+    log.Info("[Plugin] [" ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ")] loaded successfully!");
 }
 
 public void OnMapStart()

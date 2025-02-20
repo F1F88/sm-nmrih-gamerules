@@ -27,3 +27,32 @@ enum NMR_GameType
 
     NMR_GameType_Total
 }
+
+
+
+
+
+
+
+/**
+ * Do not edit below this line!
+ */
+public SharedPlugin __pl_nmrih_gamerules =
+{
+    name = "Library NMRiH GameRules",
+    file = "nmrih_gamerules.smx",
+#if defined REQUIRE_PLUGIN
+    required = 1,
+#else
+    required = 0,
+#endif
+};
+
+
+#if !defined REQUIRE_PLUGIN
+public void __pl_nmrih_gamerules_SetNTVOptional()
+{
+    MarkNativeAsOptional("OnGameRulesGetPlayerSpawnSpot");
+    MarkNativeAsOptional("OnGameRulesGetPlayerSpawnSpotPost");
+}
+#endif
