@@ -3,7 +3,6 @@
 #include <sdkhooks>
 
 // All
-#define LOG4SP_NO_EXT
 #include <log4sp>
 #include <nmrih_gamerules>
 
