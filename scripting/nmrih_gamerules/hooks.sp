@@ -49,10 +49,10 @@ static DynamicHook LoadHook(Handle gamedata, const char[] name)
 static void EnableHook(DynamicHook hook, DHookCallback PreCB, DHookCallback PostCB)
 {
     if (!hook.HookGamerules(Hook_Pre, PreCB))
-        log.ThrowError(LogLevel_Fatal, "Failed to hook game rules");
+        g_hLogger.Fatal("Failed to hook game rules");
 
     if (!hook.HookGamerules(Hook_Post, PostCB))
-        log.ThrowError(LogLevel_Fatal, "Failed to hook game rules Post");
+        g_hLogger.Fatal("Failed to hook game rules Post");
 }
 
 
@@ -60,7 +60,7 @@ static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
 {
     int player = hParams.Get(1);
     int returnValue = hReturn.Value;
-    log.TraceEx("GetPlayerSpawnSpot (player %d) (return %d)", player, returnValue);
+    g_hLogger.TraceF("GetPlayerSpawnSpot (player %d) (return %d)", player, returnValue);
 
 
     Action result;
@@ -75,7 +75,7 @@ static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
     hParams.Set(1, player);
     hReturn.Value = returnValue;
 
-    log.TraceEx("GetPlayerSpawnSpot Changed! (result %d) (player %d) (return %d)", result, player, returnValue);
+    g_hLogger.TraceF("GetPlayerSpawnSpot Changed! (result %d) (player %d) (return %d)", result, player, returnValue);
 
     if (result == Plugin_Changed)
         return MRES_Override;
@@ -87,7 +87,7 @@ static MRESReturn GetPlayerSpawnSpotPost(DHookReturn hReturn, DHookParam hParams
 {
     int player = hParams.Get(1);
     int returnValue = hReturn.Value;
-    log.TraceEx("GetPlayerSpawnSpotPost (player %d) (return %d)", player, returnValue);
+    g_hLogger.TraceF("GetPlayerSpawnSpotPost (player %d) (return %d)", player, returnValue);
 
     Call_StartForward(hGlobalForwards[FWD_GetPlayerSpawnSpotPost]);
     Call_PushCell(player);
