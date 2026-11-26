@@ -15,8 +15,8 @@
 
             "CGameRules::GetPlayerSpawnSpot"
             {
-                "windows"   "76"
-                "linux"     "77"
+                "windows"   "75"
+                "linux"     "76"
             }
         }
 
