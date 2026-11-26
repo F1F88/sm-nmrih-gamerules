@@ -14,7 +14,7 @@
 
 #define PLUGIN_NAME        "Library NMRiH GameRules"
 #define PLUGIN_DESCRIPTION "Library NMRiH GameRules"
-#define PLUGIN_VERSION     "1.1.1"
+#define PLUGIN_VERSION     "1.1.2"
 
 public Plugin myinfo =
 {
@@ -48,13 +48,16 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public void OnPluginStart()
 {
+    /* ------- Log Debug ------- */
+    g_hLogger = CreateLogger();
+
     /* ------- Load GameData ------- */
     GameData gamedata = new GameData("nmrih_gamerules.games");
     if (!gamedata)
-        SetFailState("Couldn't find nmrih_gamerules.games gamedata");
+        g_hLogger.Fatal("Couldn't find nmrih_gamerules.games gamedata");
 
     // if ((OS = gamedata.GetOffset("OS")) == -1)
-    //     SetFailState("Failed to read gamedata offset of \"OS\"");
+    //     g_hLogger.Fatal("Failed to read gamedata offset of \"OS\"");
 
     LoadHooks(gamedata);
     delete gamedata;
@@ -65,18 +68,11 @@ public void OnPluginStart()
     /* ------- Register Libray ------- */
     RegPluginLibrary("nmrih_gamerules");
 
-    /* ------- Log Debug ------- */
-    g_hLogger = CreateLogger();
     g_hLogger.Info("[SM] " ... PLUGIN_NAME ... " (" ... PLUGIN_VERSION ... ") initialize complete!");
 }
 
 public void OnAllPluginsLoaded()
 {
-    if (!LibraryExists("nmrih_gamerules"))
-    {
-        g_hLogger.Warn("The library \"nmrih_gamerules\" does not exist, NMR_Player.ForceSpawn is unavailable.");
-    }
-
     if (!LoggerRegistry.IsAvailable())
     {
         g_hLogger.Warn("The plugin log4sp_manager is unavailable.");

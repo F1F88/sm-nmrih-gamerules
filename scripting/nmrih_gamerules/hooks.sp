@@ -28,6 +28,7 @@ void CreateHooksGlobalForwards()
 
 void LoadHooks(GameData gamedata)
 {
+    g_hLogger.Trace("LoadHooks called.");
     hHooks[HOK_GetPlayerSpawnSpot] = LoadHook(gamedata, "CGameRules::GetPlayerSpawnSpot");
 }
 
@@ -35,33 +36,52 @@ void LoadHooks(GameData gamedata)
 // 需要在 Map Start 再次 Hook
 void EnableHooks()
 {
-    EnableHook(hHooks[HOK_GetPlayerSpawnSpot], GetPlayerSpawnSpot, GetPlayerSpawnSpotPost);
+    g_hLogger.Trace("EnableHooks called.");
+
+    EnableHook(HOK_GetPlayerSpawnSpot, GetPlayerSpawnSpot, GetPlayerSpawnSpotPost);
 }
 
 static DynamicHook LoadHook(Handle gamedata, const char[] name)
 {
     DynamicHook hook = DynamicHook.FromConf(gamedata, name);
     if (hook == null)
-        SetFailState("Failed to setup hook for Functions \"%s\"", name);
+        g_hLogger.FatalF("Failed to setup hook for Functions \"%s\".", name);
+    else
+        g_hLogger.DebugF("Setup hook for Functions \"%s\".", name);
     return hook;
 }
 
-static void EnableHook(DynamicHook hook, DHookCallback PreCB, DHookCallback PostCB)
+static void EnableHook(int index, DHookCallback PreCB, DHookCallback PostCB)
 {
-    if (!hook.HookGamerules(Hook_Pre, PreCB))
-        g_hLogger.Fatal("Failed to hook game rules");
+    if (index < 0 || index >= sizeof(hHooks))
+        g_hLogger.FatalF("Invalid hHooks index %d.", index);
 
-    if (!hook.HookGamerules(Hook_Post, PostCB))
-        g_hLogger.Fatal("Failed to hook game rules Post");
+    DynamicHook hook = hHooks[index];
+    {
+        int id = hook.HookGamerules(Hook_Pre, PreCB, OnDHookRemoval);
+        if (id == INVALID_HOOK_ID)
+            g_hLogger.FatalF("Failed to enable hook (index %d).", index);
+        else
+            g_hLogger.DebugF("Enable hook %d (index %d).", id, index);
+    }
+
+    {
+        int id = hook.HookGamerules(Hook_Post, PostCB, OnDHookRemoval);
+        if (id == INVALID_HOOK_ID)
+            g_hLogger.FatalF("Failed to enable hook post (index %d).", index);
+        else
+            g_hLogger.DebugF("Enable hook post %d (index %d).", id, index);
+    }
 }
 
 
 static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
 {
+    g_hLogger.TraceF("GetPlayerSpawnSpot (hReturn %d) (hParams %d).", hReturn, hParams);
+
     int player = hParams.Get(1);
     int returnValue = hReturn.Value;
-    g_hLogger.TraceF("GetPlayerSpawnSpot (player %d) (return %d)", player, returnValue);
-
+    g_hLogger.DebugF("GetPlayerSpawnSpot (player %d) (return %d).", player, returnValue);
 
     Action result;
     Call_StartForward(hGlobalForwards[FWD_GetPlayerSpawnSpot]);
@@ -75,7 +95,7 @@ static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
     hParams.Set(1, player);
     hReturn.Value = returnValue;
 
-    g_hLogger.TraceF("GetPlayerSpawnSpot Changed! (result %d) (player %d) (return %d)", result, player, returnValue);
+    g_hLogger.DebugF("GetPlayerSpawnSpot Changed! (result %d) (player %d) (return %d).", result, player, returnValue);
 
     if (result == Plugin_Changed)
         return MRES_Override;
@@ -85,9 +105,11 @@ static MRESReturn GetPlayerSpawnSpot(DHookReturn hReturn, DHookParam hParams)
 
 static MRESReturn GetPlayerSpawnSpotPost(DHookReturn hReturn, DHookParam hParams)
 {
+    g_hLogger.TraceF("GetPlayerSpawnSpotPost (hReturn %d) (hParams %d).", hReturn, hParams);
+
     int player = hParams.Get(1);
     int returnValue = hReturn.Value;
-    g_hLogger.TraceF("GetPlayerSpawnSpotPost (player %d) (return %d)", player, returnValue);
+    g_hLogger.DebugF("GetPlayerSpawnSpotPost (player %d) (return %d).", player, returnValue);
 
     Call_StartForward(hGlobalForwards[FWD_GetPlayerSpawnSpotPost]);
     Call_PushCell(player);
@@ -95,4 +117,9 @@ static MRESReturn GetPlayerSpawnSpotPost(DHookReturn hReturn, DHookParam hParams
     Call_Finish();
 
     return MRES_Ignored;
+}
+
+static void OnDHookRemoval(int hookid)
+{
+    g_hLogger.DebugF("Hook %d removed.", hookid);
 }
